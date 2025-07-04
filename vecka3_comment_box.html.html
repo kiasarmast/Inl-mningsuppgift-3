@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+       #form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+body{
+    background-color: #021526;
+}
+label {
+    color: #E2E2B6;
+    padding: 2%;
+    margin-top: 5%;
+    font-size: 1.7em;
+    text-align: center;
+    width: 100%;
+}
+
+#text {
+    background-color: black;
+    color: #E2E2B6;
+    width: 500px;
+    height: 150px;
+    padding: 10px;
+    font-size: 1em;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 5px;
+    border: 1px solid #03346E;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+#tecken {
+    padding: 1%;
+    margin: 1%;
+    font-size: 1.4em;
+    font-weight: bold;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #E2E2B6;
+}
+
+button {
+    padding: 0.7rem 1.3rem;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkcyan;
+}
+#kommentar {
+    margin-top: 5%;
+   padding: 0.75rem;
+      margin-top: 1rem;
+      border-radius: 5px;
+      position: relative;
+}
+button:focus{
+    background-color: tomato;
+}
+.tKnapp{
+    position: absolute;
+      right: 10px;
+      top: 10px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 2px 6px;
+      cursor: pointer;}
+.kommentStycke {
+        background-color: #03346E;
+    padding: 1rem;
+    margin: 1rem auto;
+    border-radius: 8px;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.komment-block {
+    margin: 0;
+    color: #E2E2B6;
+    font-size: 1.1em;}
+.komment-text {
+    flex: 1;
+    color: #E2E2B6;
+    word-break: break-word;
+}
+    </style>
+</head>
+<body>
+    <form id="form">
+        <label for="komment"> Din kommentar</label><br>
+        <textarea id="text" name="textinput" rows="5" cols="50"></textarea>
+        <div id="tecken"> 400 tecken kvar</div><br>
+        <button type="submit" id="submitKnapp"> Skicka in !</button>
+    </form>
+    <section id = "kommentar" aria-live="polite" aria-label="Kommentarslista"></section>
+</body>
+<script> // Ha till gång till Element med deras ID
+    const form = document.getElementById("form");
+    const text = document.getElementById("text");
+    const tecken = document.getElementById("tecken");
+    const submitKnapp = document.getElementById("submitKnapp");
+    const komment = document.getElementById("kommentar");
+    const maxTecken = 400; // maximum tecken som är tillåtna
+
+    text.addEventListener("input", ()=>{
+        const teckenKvar = maxTecken - text.value.length;
+        tecken.textContent = teckenKvar +  " tecken kvar"
+    });
+    // Skapa "Shortcuts"
+    text.addEventListener("keydown",(e) => {
+        if (e.altKey && e.key === "Enter") {
+            form.requestSubmit(); 
+            
+        }
+    });
+    submitKnapp.addEventListener("mouseover",(e)=>{
+        submitKnapp.textContent ="Klick mig !";
+    })
+   submitKnapp.addEventListener ("mouseout",(e)=>{
+        submitKnapp.textContent = "Skicka in !"
+    })
+    // Formulär hantering (formulär bör inte vara tomt)
+    form.addEventListener("submit", (e)=> {
+        e.preventDefault();
+        const kommentText = text.value.trim();
+        if(kommentText ===""){
+        alert ("Du Måste fylla in för att kunna Skicka in !");
+        return;
+
+    }
+    // Uppvisning av kommentarer
+    const container = document.createElement("div")
+    container.classList.add("kommentStycke")
+    const vissaKommentars = document.createElement("span");
+    vissaKommentars.className = "komment-text";
+     const vissaKommentar = document.createElement("p");
+     vissaKommentar.classList.add("komment-block")
+    vissaKommentar.textContent = kommentText;
+    // Skapa Knapp för att kunna radera kommentarer
+    const tabortKnapp = document.createElement ("button");
+    tabortKnapp.className = "tKnapp";
+    tabortKnapp.setAttribute ("aria-label", "Radera kommentar");
+    tabortKnapp.textContent = "Radera";
+    tabortKnapp.addEventListener("click",() => {
+    komment.removeChild(container)
+
+    });
+    container.appendChild(vissaKommentar);
+    container.appendChild(tabortKnapp);
+    komment.appendChild(container);
+    // Nollställa formulär
+    text.value = "";
+    tecken.textContent = maxTecken + " tecken kvar";
+    
+});
+    
+</script>
+</html>
